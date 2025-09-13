@@ -4,18 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab991768-2178-4c76-bfa9-93d0e19c2b61" name="Changes" comment="модели потом доделаю">
-      <change afterPath="$PROJECT_DIR$/forum_app/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/forum_app/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/forum_app/complaint_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/forum_app/complaint_list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/forum_app/forum_form.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/forum_app/forum_list.html" afterDir="false" />
+    <list default="true" id="ab991768-2178-4c76-bfa9-93d0e19c2b61" name="Changes" comment="форумная страница с постами&#10;&#10;шаблоны все(штмл) теперь в отдельной директории(папке)&quot;templates&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +77,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756566359151</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="форумная страница с постами&#10;&#10;шаблоны все(штмл) теперь в отдельной директории(папке)&quot;templates&quot;">
+      <option name="closed" value="true" />
+      <created>1757773929480</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1757773929480</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -115,6 +113,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="модели потом доделаю" />
-    <option name="LAST_COMMIT_MESSAGE" value="модели потом доделаю" />
+    <MESSAGE value="форумная страница с постами&#10;&#10;шаблоны все(штмл) теперь в отдельной директории(папке)&quot;templates&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="форумная страница с постами&#10;&#10;шаблоны все(штмл) теперь в отдельной директории(папке)&quot;templates&quot;" />
   </component>
 </project>
