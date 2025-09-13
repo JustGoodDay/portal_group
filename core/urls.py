@@ -17,8 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from authentication_app.views import *
+from forum_app.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register_view, name='register'),
+# Форум
+    path('forum/', forum_list, name='forum_list'),
+    path('forum/new/', forum_create, name='forum_create'),
+# Жалобы
+    path('complaints/', complaint_list, name='complaint_list'),
+    path('complaints/new/', complaint_create, name='complaint_create'),
 ]
+
