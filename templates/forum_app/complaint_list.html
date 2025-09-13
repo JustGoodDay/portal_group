@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Список жалоб</h1>
+<a href="{% url 'complaint_create' %}">Подать новую жалобу</a>
+<hr>
+{% for complaint in complaints %}
+    <div style="border:1px solid #f00; padding:10px; margin-bottom:10px;">
+        <strong>От: {{ complaint.user.username }}</strong>
+        <p>{{ complaint.text }}</p>
+        {% if complaint.image %}
+            <img src="{{ complaint.image.url }}" alt="Фото" style="max-width:200px;">
+        {% endif %}
+        <p>Степень серьёзности: {{ complaint.seriousness }}</p>
+        <small>{{ complaint.created_at }}</small>
+    </div>
+{% empty %}
+    <p>Жалоб пока нет.</p>
+{% endfor %}
+{% endblock %}
