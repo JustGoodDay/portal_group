@@ -3,13 +3,27 @@
 <h1>Форум</h1>
 <a href="{% url 'forum_create' %}">Создать новую тему</a>
 <hr>
-{% for post in posts %}
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.content }}</p>
-        <small>Автор: {{ post.author.username }} | {{ post.created_at }}</small>
-    </div>
+
+{% for item in posts_data %}
+<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+    <h3>{{ item.post.title }}</h3>
+    <p>{{ item.post.content }}</p>
+    <small>Автор: {{ item.post.author.username }} | {{ item.post.created_at }}</small><br>
+
+    Лайки: {{ item.likes_count }} | Дизлайки: {{ item.dislikes_count }}<br>
+
+    {% if user.is_authenticated %}
+        {% if item.user_vote == True %}
+            <strong>Ви лайкнули цей пост 👍</strong>
+        {% elif item.user_vote == False %}
+            <strong>Ви дизлайкнули цей пост 👎</strong>
+        {% else %}
+            <a href="{% url 'forum_vote' item.post.id 1 %}">👍</a>
+            <a href="{% url 'forum_vote' item.post.id 0 %}">👎</a>
+        {% endif %}
+    {% endif %}
+</div>
 {% empty %}
-    <p>Постов пока нет.</p>
+<p>Постов пока нет.</p>
 {% endfor %}
 {% endblock %}

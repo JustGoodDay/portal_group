@@ -1,19 +1,37 @@
+{% load custom_tags %}
 {% extends "base.html" %}
 {% block content %}
 <h1>Список жалоб</h1>
 <a href="{% url 'complaint_create' %}">Подать новую жалобу</a>
 <hr>
 {% for complaint in complaints %}
-    <div style="border:1px solid #f00; padding:10px; margin-bottom:10px;">
-        <strong>От: {{ complaint.user.username }}</strong>
-        <p>{{ complaint.text }}</p>
-        {% if complaint.image %}
-            <img src="{{ complaint.image.url }}" alt="Фото" style="max-width:200px;">
+<div style="border:1px solid #f00; padding:10px; margin-bottom:10px;">
+    <strong>От: {{ complaint.user.username }}</strong>
+    <p>{{ complaint.text }}</p>
+
+    {% if complaint.image %}
+        <img src="{{ complaint.image.url }}" alt="Фото" style="max-width:200px;">
+    {% endif %}
+
+    <br>
+    Лайки: {{ likes_count|get_item:complaint.id|default:"0" }}
+    Дизлайки: {{ dislikes_count|get_item:complaint.id|default:"0" }}<br>
+
+    {% if user.is_authenticated %}
+        {% if user_likes|get_item:complaint.id == True %}
+            <strong>Ви лайкнули цю скаргу 👍</strong>
+        {% elif user_likes|get_item:complaint.id == False %}
+            <strong>Ви дизлайкнули цю скаргу 👎</strong>
+        {% else %}
+            <a href="{% url 'vote_complaint' complaint.id 1 %}">👍</a>
+            <a href="{% url 'vote_complaint' complaint.id 0 %}">👎</a>
         {% endif %}
-        <p>Степень серьёзности: {{ complaint.seriousness }}</p>
-        <small>{{ complaint.created_at }}</small>
-    </div>
+    {% endif %}
+
+    <p>Степень серьёзности: {{ complaint.seriousness }}</p>
+    <small>{{ complaint.created_at }}</small>
+</div>
 {% empty %}
-    <p>Жалоб пока нет.</p>
+<p>Жалоб пока нет.</p>
 {% endfor %}
 {% endblock %}

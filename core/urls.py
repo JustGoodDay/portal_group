@@ -22,11 +22,15 @@ from forum_app.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register_view, name='register'),
+    path('forum/vote/<int:post_id>/<int:vote>/', forum_vote, name='forum_vote'),  # <- додати
 # Форум
     path('forum/', forum_list, name='forum_list'),
     path('forum/new/', forum_create, name='forum_create'),
 # Жалобы
     path('complaints/', complaint_list, name='complaint_list'),
     path('complaints/new/', complaint_create, name='complaint_create'),
+# Форум
+
+
 ]
 
