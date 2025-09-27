@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Електронний щоденник</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .diary-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+        }
+        .grade-card {
+            border-left: 4px solid #007bff;
+            transition: all 0.3s ease;
+        }
+        .grade-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .grade-badge {
+            font-size: 1.2rem;
+            padding: 0.5rem 1rem;
+        }
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Заголовок з ім'ям учня -->
+        <div class="diary-header text-center">
+            <h1>📚 Електронний щоденник</h1>
+            {% if student %}
+                <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+
+                <!-- Вибір іншого учня -->
+                {% if all_students.count > 1 %}
+                <div class="mt-3">
+                    <label class="text-white-50">Обрати іншого учня:</label>
+                    <select onchange="window.location.href='/'+this.value+'/'" class="form-select d-inline-block w-auto">
+                        {% for s in all_students %}
+                            <option value="{{ s.id }}" {% if s.id == student.id %}selected{% endif %}>
+                                {{ s.first_name }} {{ s.last_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            {% else %}
+                <h2>Учні відсутні</h2>
+                <p>Додайте учнів через <a href="/admin/" class="text-white">адміністративну панель</a></p>
+            {% endif %}
+        </div>
+
+        {% if student %}
+        <!-- Секція фільтрів -->
+        <div class="filter-section">
+            <h4 class="mb-3">🔍 Фільтри</h4>
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label for="month" class="form-label">Місяць:</label>
+                    <select name="month" id="month" class="form-select">
+                        <option value="">Всі місяці</option>
+                        {% for month_num, month_name in months %}
+                            <option value="{{ month_num }}"
+                                    {% if selected_month == month_num %}selected{% endif %}>
+                                {{ month_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="subject" class="form-label">Предмет:</label>
+                    <select name="subject" id="subject" class="form-select">
+                        <option value="">Всі предмети</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject.id }}"
+                                    {% if selected_subject == subject.id %}selected{% endif %}>
+                                {{ subject.name }}
+                            </option>
+                        {% endfor %}
+                        </select>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary me-2">Застосувати фільтри</button>
+                    <a href="{% url 'diary_home' %}" class="btn btn-outline-secondary">Скинути фільтри</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Оцінки -->
+        <div class="row">
+            {% if grades %}
+                {% for grade in grades %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card grade-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">{{ grade.subject.name }}</h5>
+                                    <span class="badge
+                                        {% if grade.grade >= 10 %}bg-success
+                                        {% elif grade.grade >= 7 %}bg-warning
+                                        {% else %}bg-danger{% endif %} grade-badge">
+                                        {{ grade.grade }}
+                                    </span>
+                                </div>
+
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        📅 {{ grade.date|date:"d.m.Y" }}
+                                    </small>
+                                </p>
+
+                                {% if grade.comment %}
+                                    <div class="alert alert-info py-2 px-3">
+                                        <small><strong>Коментар:</strong> {{ grade.comment }}</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-warning text-center" role="alert">
+                        <h4>📝 Оцінок не знайдено</h4>
+                        <p>За вибраними фільтрами оцінки відсутні. Спробуйте змінити параметри пошуку.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Статистика -->
+        {% if grades %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📊 Статистика</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <h6>Всього оцінок</h6>
+                                <span class="badge bg-primary fs-6">{{ statistics.total_grades|default:0 }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <h6>Середній бал</h6>
+                                <span class="badge bg-info fs-6">{{ statistics.average_grade|default:0|floatformat:1 }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <h6>Найвища оцінка</h6>
+                                <span class="badge bg-success fs-6">{{ statistics.highest_grade|default:0 }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <h6>Предметів</h6>
+                                <span class="badge bg-warning fs-6">{{ statistics.subjects_count|default:0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+            {% endif %}
+    </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+     {% endif %}
+</body>
+</html>
