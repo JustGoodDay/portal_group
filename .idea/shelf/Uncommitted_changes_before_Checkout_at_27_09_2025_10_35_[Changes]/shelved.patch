@@ -1,0 +1,17 @@
+Index: authentication_app/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/authentication_app/urls.py b/authentication_app/urls.py
+new file mode 100644
+--- /dev/null	(date 1758958494919)
++++ b/authentication_app/urls.py	(date 1758958494919)
+@@ -0,0 +1,6 @@
++from django.urls import path
++from . import views
++
++urlpatterns = [
++    path("", views.gallery, name="gallery"),
++]
+\ No newline at end of file

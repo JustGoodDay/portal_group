@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from .forms import ProfileCreationForm
+from .forms import ProfileCreationForm, StoryForm
+from .models import Story
 
 def register_view(request):
     if request.method == 'POST':
@@ -32,6 +33,16 @@ def logout_view(request):
     logout(request)
     return redirect('/register')
 
+
+def gallery(request):
+    form = StoryForm()
+    if request.method == 'POST':
+        form = StoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('gallery')  # Перезагрузка страницы после загрузки
+    stories = Story.objects.all()
+    return render(request, 'authentication_app/gallery.html', {'stories': stories, 'form': form})
 
 
 

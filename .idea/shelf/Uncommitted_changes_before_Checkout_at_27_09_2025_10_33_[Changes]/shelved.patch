@@ -1,0 +1,139 @@
+Index: core/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\"\"\"\r\nURL configuration for core project.\r\n\r\nThe `urlpatterns` list routes URLs to views. For more information please see:\r\n    https://docs.djangoproject.com/en/4.2/topics/http/urls/\r\nExamples:\r\nFunction views\r\n    1. Add an import:  from my_app import views\r\n    2. Add a URL to urlpatterns:  path('', views.home, name='home')\r\nClass-based views\r\n    1. Add an import:  from other_app.views import Home\r\n    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')\r\nIncluding another URLconf\r\n    1. Import the include() function: from django.urls import include, path\r\n    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))\r\n\"\"\"\r\nfrom django.contrib import admin\r\nfrom django.urls import path\r\nfrom authentication_app.views import *\r\n\r\nurlpatterns = [\r\n    path('admin/', admin.site.urls),\r\n    path('register/', register_view, name='register'),\r\n]\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/core/urls.py b/core/urls.py
+--- a/core/urls.py	(revision d00a1ea6c45e58327fdc5eb00b953ea3e1186833)
++++ b/core/urls.py	(date 1758958351885)
+@@ -15,10 +15,11 @@
+     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+ """
+ from django.contrib import admin
+-from django.urls import path
++from django.urls import path, include
+ from authentication_app.views import *
+ 
+ urlpatterns = [
+     path('admin/', admin.site.urls),
+     path('register/', register_view, name='register'),
++    path("", include("authentication_app.urls")),
+ ]
+Index: authentication_app/forms.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django import forms\r\nfrom .models import Profile\r\n\r\nclass ProfileCreationForm(forms.ModelForm):\r\n    class Meta:\r\n        model = Profile\r\n        fields = ['first_name', 'last_name', 'age']
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/authentication_app/forms.py b/authentication_app/forms.py
+--- a/authentication_app/forms.py	(revision d00a1ea6c45e58327fdc5eb00b953ea3e1186833)
++++ b/authentication_app/forms.py	(date 1758958281568)
+@@ -1,7 +1,17 @@
+ from django import forms
+-from .models import Profile
++from .models import Profile, Story
+ 
+ class ProfileCreationForm(forms.ModelForm):
+     class Meta:
+         model = Profile
+-        fields = ['first_name', 'last_name', 'age']
+\ No newline at end of file
++        fields = ['first_name', 'last_name', 'age']
++
++class StoryForm(forms.ModelForm):
++    class Meta:
++        model = Story
++        fields = ["title", "description", "image"]
++
++        widgets = {
++            "title": forms.TextInput(attrs={"placeholder": "Додайте назву"}),
++            "description": forms.Textarea(attrs={"placeholder": "Додайте детальний опис"}),
++        }
+\ No newline at end of file
+Index: authentication_app/models.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.db import models\r\nfrom django.core.validators import MinValueValidator, MaxValueValidator\r\nfrom django.contrib.auth.models import User\r\n\r\nclass Profile(models.Model):\r\n\r\n    user = models.ForeignKey(User, on_delete=models.CASCADE)\r\n\r\n    first_name = models.CharField(max_length=50)\r\n    last_name = models.CharField(max_length=50)\r\n    age = models.IntegerField(validators=[MinValueValidator(14), MaxValueValidator(100)])
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/authentication_app/models.py b/authentication_app/models.py
+--- a/authentication_app/models.py	(revision d00a1ea6c45e58327fdc5eb00b953ea3e1186833)
++++ b/authentication_app/models.py	(date 1758958155190)
+@@ -8,4 +8,13 @@
+ 
+     first_name = models.CharField(max_length=50)
+     last_name = models.CharField(max_length=50)
+-    age = models.IntegerField(validators=[MinValueValidator(14), MaxValueValidator(100)])
+\ No newline at end of file
++    age = models.IntegerField(validators=[MinValueValidator(14), MaxValueValidator(100)])
++
++class Story(models.Model):
++    title = models.CharField(max_length=255)
++    description = models.TextField(blank=True)
++    image = models.ImageField(upload_to="gallery/")
++    created_at = models.DateTimeField(auto_now_add=True)
++
++    def __str__(self):
++        return self.title
+\ No newline at end of file
+Index: authentication_app/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.shortcuts import render, redirect\r\nfrom django.views.generic import FormView\r\nfrom django.contrib.auth.models import User\r\nfrom django.contrib.auth import login, logout\r\nfrom django.contrib.auth.forms import UserCreationForm, AuthenticationForm\r\n\r\nfrom .forms import ProfileCreationForm\r\n\r\ndef register_view(request):\r\n    if request.method == 'POST':\r\n        user_form = UserCreationForm(request.POST)\r\n        profile_form = ProfileCreationForm(request.POST)\r\n        if user_form.is_valid() and profile_form.is_valid():\r\n            user = user_form.save()\r\n\r\n            profile = profile_form.save(commit=False)\r\n            profile.user = user\r\n            profile.save()\r\n\r\n            login(request, user)\r\n\r\n            return redirect(\"/\") # на головну сторінку після реєстрації\r\n    else:\r\n        user_form = UserCreationForm()\r\n        profile_form = ProfileCreationForm()\r\n\r\n    context = {'user_form': user_form, 'profile_form': profile_form}\r\n\r\n    return render(request, \"authentication_app/register.html\", context)\r\n\r\ndef logout_view(request):\r\n    logout(request)\r\n    return redirect('/register')\r\n\r\n\r\n\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/authentication_app/views.py b/authentication_app/views.py
+--- a/authentication_app/views.py	(revision d00a1ea6c45e58327fdc5eb00b953ea3e1186833)
++++ b/authentication_app/views.py	(date 1758958302441)
+@@ -4,7 +4,8 @@
+ from django.contrib.auth import login, logout
+ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+ 
+-from .forms import ProfileCreationForm
++from .forms import ProfileCreationForm, StoryForm
++from .models import Story
+ 
+ def register_view(request):
+     if request.method == 'POST':
+@@ -33,6 +34,19 @@
+     return redirect('/register')
+ 
+ 
++def gallery(request):
++    stories = Story.objects.all().order_by("-created_at")
++
++    if request.method == "POST":
++        form = StoryForm(request.POST, request.FILES)
++        if form.is_valid():
++            form.save()
++            return redirect("gallery")  # вернемся на главную после публикации
++    else:
++        form = StoryForm()
++
++    return render(request, "authentication_app/gallery.html", {"stories": stories, "form": form})
++
+ 
+ 
+ 
+Index: authentication_app/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/authentication_app/urls.py b/authentication_app/urls.py
+new file mode 100644
+--- /dev/null	(date 1758958327249)
++++ b/authentication_app/urls.py	(date 1758958327249)
+@@ -0,0 +1,6 @@
++from django.urls import path
++from . import views
++
++urlpatterns = [
++    path("", views.gallery, name="gallery"),
++]
+\ No newline at end of file
