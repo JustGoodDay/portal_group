@@ -1,4 +1,5 @@
 from forum_app import views as forum_views
+from django.urls import path
 
 urlpatterns = [
 # Форум
