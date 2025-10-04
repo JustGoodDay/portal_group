@@ -1,0 +1,7 @@
+<h2>Редагувати проект</h2>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Оновити</button>
+</form>
+<a href="{% url 'portfolio_list' %}">⬅ Назад</a>

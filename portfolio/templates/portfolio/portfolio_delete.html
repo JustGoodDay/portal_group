@@ -1,0 +1,7 @@
+<h2>Видалити проект</h2>
+<p>Ви дійсно хочете видалити <strong>{{ project.title }}</strong>?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Так, видалити</button>
+  <a href="{% url 'portfolio_list' %}">Скасувати</a>
+</form>

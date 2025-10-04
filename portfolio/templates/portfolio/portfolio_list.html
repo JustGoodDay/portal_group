@@ -1,0 +1,20 @@
+<h2>Моє портфоліо</h2>
+<a href="{% url 'portfolio_create' %}">➕ Додати проект</a>
+<ul>
+  {% for project in portfolios %}
+    <li>
+      <strong>{{ project.title }}</strong><br>
+      {{ project.description }}<br>
+      {% if project.link %}
+        🔗 <a href="{{ project.link }}" target="_blank">Посилання</a><br>
+      {% endif %}
+      {% if project.screenshot %}
+        <img src="{{ project.screenshot.url }}" width="200"><br>
+      {% endif %}
+      <a href="{% url 'portfolio_edit' project.pk %}">✏ Редагувати</a> |
+      <a href="{% url 'portfolio_delete' project.pk %}">🗑 Видалити</a>
+    </li>
+  {% empty %}
+    <li>Поки що немає проектів.</li>
+  {% endfor %}
+</ul>
